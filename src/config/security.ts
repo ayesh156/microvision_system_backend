@@ -211,7 +211,8 @@ export const corsConfig = {
       origins.push(/\.onrender\.com$/);
       origins.push(/\.ecosystemlk\.tech$/);
       origins.push(/\.ecosystemlk\.app$/);
-      origins.push(/\.ecotec\.lk$/);
+      origins.push(/\.microvision\.lk$/);
+      origins.push(/\.microvision\.ecosystemlk\.app$/);
     }
 
     return origins;

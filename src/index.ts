@@ -118,9 +118,10 @@ function isOriginAllowed(origin: string | undefined): boolean {
   if (!origin) return false;
   if (/^https?:\/\/localhost(:\d+)?$/i.test(origin)) return true;
   if (/^https?:\/\/127\.0\.0\.1(:\d+)?$/i.test(origin)) return true;
-  if (/^https:\/\/ecotec\.ecosystemlk\.app\/?$/i.test(origin)) return true;
-  if (/^https:\/\/api\.ecotec\.ecosystemlk\.app\/?$/i.test(origin)) return true;
+  if (/^https:\/\/microvision\.ecosystemlk\.app\/?$/i.test(origin)) return true;
+  if (/^https:\/\/api\.microvision\.ecosystemlk\.app\/?$/i.test(origin)) return true;
   if (/\.ecosystemlk\.app$/i.test(origin)) return true;
+  if (/\.microvision\.lk$/i.test(origin)) return true;
   return false;
 }
 
@@ -131,8 +132,9 @@ function setHeaderClean(res: express.Response, name: string, value: string): voi
 
 app.use((req, res, next) => {
   const origin = req.headers.origin;
+  const fallbackOrigin = process.env.FRONTEND_URL || 'https://microvision.ecosystemlk.app';
   setHeaderClean(res, 'Vary', 'Origin');
-  setHeaderClean(res, 'Access-Control-Allow-Origin', (origin && isOriginAllowed(origin)) ? origin : 'https://ecotec.ecosystemlk.app');
+  setHeaderClean(res, 'Access-Control-Allow-Origin', (origin && isOriginAllowed(origin)) ? origin : fallbackOrigin);
   setHeaderClean(res, 'Access-Control-Allow-Credentials', 'true');
   setHeaderClean(res, 'Access-Control-Expose-Headers', 'Set-Cookie, X-Request-ID');
   if (req.method === 'OPTIONS') {

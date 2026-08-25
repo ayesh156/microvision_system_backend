@@ -37,7 +37,7 @@ export function renderStatusPage(options: StatusPageOptions): string {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ecotec System API - Status</title>
+  <title>Microvision System API - Status</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>${STATUS_CSS}</style>
@@ -45,7 +45,7 @@ export function renderStatusPage(options: StatusPageOptions): string {
 <body>
   <div class="card">
     <div class="icon">⚡</div>
-    <h1>Ecotec System API</h1>
+    <h1>Microvision System API</h1>
     <p class="subtitle">Internal Express REST API Server is Active</p>
     <div class="row"><span class="dot"></span><strong>Server API is Working!</strong></div>
     <div class="meta">
@@ -67,14 +67,14 @@ export function renderRootPage(options: StatusPageOptions): string {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Eco System API - Online</title>
+  <title>Microvision Computers API - Online</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>${STATUS_CSS}</style>
 </head>
 <body>
   <div class="card">
     <div class="icon">🚀</div>
-    <h1>Eco System API</h1>
+    <h1>Microvision Computers API</h1>
     <p class="subtitle">Enterprise Shop Management System</p>
     <div class="row"><span class="dot"></span><strong>API is Working!</strong></div>
     <div class="meta">
