@@ -1011,15 +1011,15 @@ const QUOTATIONS_DATA: SeedQuotation[] = [
 ];
 
 async function main() {
-  console.log("\n╔════════════════════════════════════════════╗");
-  console.log("║  🌱 MICROVISION DATABASE SEED              ║");
-  console.log("║     Single-Shop Mode (Zero Data Loss)      ║");
-  console.log("╚════════════════════════════════════════════╝\n");
+  // console.log("\n╔════════════════════════════════════════════╗");
+  // console.log("║  🌱 MICROVISION DATABASE SEED              ║");
+  // console.log("║     Single-Shop Mode (Zero Data Loss)      ║");
+  // console.log("╚════════════════════════════════════════════╝\n");
 
   // ─────────────────────────────────────────────
   // 1. Default Shop (upsert - never deletes)
   // ─────────────────────────────────────────────
-  console.log("📌 Ensuring Default Shop...");
+  // console.log("📌 Ensuring Default Shop...");
   const defaultShopId = CONFIG.DEFAULT_SHOP_ID || undefined;
 
   const shop = await prisma.shop.upsert({
@@ -1049,31 +1049,31 @@ async function main() {
       hiddenSections: DEFAULT_HIDDEN_SECTIONS,
     },
   });
-  console.log(`   ✅ Shop: ${shop.name} (${shop.id})`);
-  console.log(`   ℹ️  Set DEFAULT_SHOP_ID=${shop.id} in .env\n`);
+  // console.log(`   ✅ Shop: ${shop.name} (${shop.id})`);
+  // console.log(`   ℹ️  Set DEFAULT_SHOP_ID=${shop.id} in .env\n`);
 
   // ─────────────────────────────────────────────
   // 1b. Purge legacy prefixed document numbers (QUO-*) / (EST-*)
   //     so the seed fully migrates to 10-digit numeric format.
   // ─────────────────────────────────────────────
-  console.log("📌 Purging legacy prefixed document numbers...");
+  // console.log("📌 Purging legacy prefixed document numbers...");
   const legacyQuotationCount = await prisma.quotation.deleteMany({
     where: { shopId: shop.id, quotationNumber: { startsWith: "QUO-" } },
   });
   const legacyEstimateCount = await prisma.estimate.deleteMany({
     where: { shopId: shop.id, estimateNumber: { startsWith: "EST-" } },
   });
-  console.log(
+  // console.log(
     `   🗑️  Removed ${legacyQuotationCount.count} legacy QUO-* quotation(s)`,
   );
-  console.log(
+  // console.log(
     `   🗑️  Removed ${legacyEstimateCount.count} legacy EST-* estimate(s)\n`,
   );
 
   // ─────────────────────────────────────────────
   // 2. Admin & Staff Users (upsert - never deletes)
   // ─────────────────────────────────────────────
-  console.log("📌 Ensuring Users...");
+  // console.log("📌 Ensuring Users...");
   const adminPassword = await hashPassword(CONFIG.ADMIN.password);
   const admin = await prisma.user.upsert({
     where: { email: CONFIG.ADMIN.email },
@@ -1093,7 +1093,7 @@ async function main() {
       lastLogin: new Date(),
     },
   });
-  console.log(`   ✅ ADMIN: ${admin.email} / ${CONFIG.ADMIN.password}`);
+  // console.log(`   ✅ ADMIN: ${admin.email} / ${CONFIG.ADMIN.password}`);
 
   const staffPassword = await hashPassword("Staff@1234");
   await prisma.user.upsert({
@@ -1113,32 +1113,32 @@ async function main() {
       isActive: true,
     },
   });
-  console.log(`   ✅ STAFF: staff@microvision.lk / Staff@1234\n`);
+  // console.log(`   ✅ STAFF: staff@microvision.lk / Staff@1234\n`);
 
   // ─────────────────────────────────────────────
   // 3. Core Seed Only: shop profile + auth users
   //    No demo customers, products, invoices, or transactions are created.
   // ─────────────────────────────────────────────
-  console.log("📌 Core seed only: shop profile and auth users");
-  console.log("   ✅ No demo customers, products, quotations, estimates, or invoices will be created.\n");
+  // console.log("📌 Core seed only: shop profile and auth users");
+  // console.log("   ✅ No demo customers, products, quotations, estimates, or invoices will be created.\n");
 
   // ─────────────────────────────────────────────
   // Done
   // ─────────────────────────────────────────────
-  console.log("╔═══════════════════════════════════════════╗");
-  console.log("║   ✅ SEEDING COMPLETE!                     ║");
-  console.log("╚═══════════════════════════════════════════╝\n");
-  console.log(`📝 Login: ${CONFIG.ADMIN.email} / ${CONFIG.ADMIN.password}`);
-  console.log(`📝 Staff: staff@microvision.lk / Staff@1234`);
-  console.log(`🏪 Shop ID: ${shop.id}`);
-  console.log(
+  // console.log("╔═══════════════════════════════════════════╗");
+  // console.log("║   ✅ SEEDING COMPLETE!                     ║");
+  // console.log("╚═══════════════════════════════════════════╝\n");
+  // console.log(`📝 Login: ${CONFIG.ADMIN.email} / ${CONFIG.ADMIN.password}`);
+  // console.log(`📝 Staff: staff@microvision.lk / Staff@1234`);
+  // console.log(`🏪 Shop ID: ${shop.id}`);
+  // console.log(
     `💡 Data preservation: existing records (customers, products,\n   invoices, settings) were preserved — only missing seed data was added.\n`,
   );
 }
 
 main()
   .catch((e) => {
-    console.error(e);
+    // console.error(e);
     process.exit(1);
   })
   .finally(() => prisma.$disconnect());

@@ -72,7 +72,7 @@ const pdfSemaphore = new PdfSemaphore(1);
 async function getChromiumExecutable(): Promise<string> {
   // 1. Explicit env var override (Docker / custom Render setup)
   if (process.env.PUPPETEER_EXECUTABLE_PATH) {
-    console.log(`🔧 Using PUPPETEER_EXECUTABLE_PATH: ${process.env.PUPPETEER_EXECUTABLE_PATH}`);
+    // console.log(`🔧 Using PUPPETEER_EXECUTABLE_PATH: ${process.env.PUPPETEER_EXECUTABLE_PATH}`);
     return process.env.PUPPETEER_EXECUTABLE_PATH;
   }
 
@@ -84,7 +84,7 @@ async function getChromiumExecutable(): Promise<string> {
       chromium.default.setHeadlessMode = true;
       chromium.default.setGraphicsMode = false;
       const execPath = await chromium.default.executablePath();
-      console.log(`🔧 Using @sparticuz/chromium: ${execPath}`);
+      // console.log(`🔧 Using @sparticuz/chromium: ${execPath}`);
       return execPath;
     } catch (e) {
       console.warn('⚠️  @sparticuz/chromium not available, trying system Chrome...');
@@ -112,7 +112,7 @@ async function getChromiumExecutable(): Promise<string> {
     const fs = await import('fs');
     for (const candidate of candidates) {
       if (fs.existsSync(candidate)) {
-        console.log(`🔧 Found system Chrome at: ${candidate}`);
+        // console.log(`🔧 Found system Chrome at: ${candidate}`);
         return candidate;
       }
     }
@@ -125,7 +125,7 @@ async function getChromiumExecutable(): Promise<string> {
     const fullPuppeteer = await import('puppeteer');
     const execPath = (fullPuppeteer as any).executablePath?.();
     if (execPath) {
-      console.log(`🔧 Using puppeteer's bundled Chrome: ${execPath}`);
+      // console.log(`🔧 Using puppeteer's bundled Chrome: ${execPath}`);
       return execPath;
     }
   } catch {
@@ -937,7 +937,7 @@ const generateInvoiceHTML = (data: InvoicePDFData): string => {
  */
 export const generateInvoicePDF = async (data: InvoicePDFData): Promise<Buffer> => {
   if (pdfSemaphore.pending > 0) {
-    console.log(`⏳ PDF queue: ${pdfSemaphore.pending} requests waiting...`);
+    // console.log(`⏳ PDF queue: ${pdfSemaphore.pending} requests waiting...`);
   }
 
   // Acquire semaphore — blocks if another PDF is being generated
@@ -947,7 +947,7 @@ export const generateInvoicePDF = async (data: InvoicePDFData): Promise<Buffer> 
   
   try {
     const executablePath = await getChromiumExecutable();
-    console.log('📄 Launching Chromium for Invoice PDF...');
+    // console.log('📄 Launching Chromium for Invoice PDF...');
     
     browser = await puppeteer.launch({
       headless: true,
@@ -996,11 +996,11 @@ export const generateInvoicePDF = async (data: InvoicePDFData): Promise<Buffer> 
     });
     
     const result = Buffer.from(pdfBuffer);
-    console.log(`✅ Invoice PDF generated (${result.length} bytes)`);
+    // console.log(`✅ Invoice PDF generated (${result.length} bytes)`);
     return result;
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
-    console.error(`❌ Invoice PDF generation failed: ${message}`);
+    // console.error(`❌ Invoice PDF generation failed: ${message}`);
     throw new Error(`PDF generation failed: ${message}`);
   } finally {
     // CRITICAL: Always close browser AND release semaphore
@@ -1856,7 +1856,7 @@ const generateGRNHTML = (data: GRNPDFData): string => {
  */
 export const generateGRNPDF = async (data: GRNPDFData): Promise<Buffer> => {
   if (pdfSemaphore.pending > 0) {
-    console.log(`⏳ PDF queue: ${pdfSemaphore.pending} requests waiting...`);
+    // console.log(`⏳ PDF queue: ${pdfSemaphore.pending} requests waiting...`);
   }
 
   // Acquire semaphore — blocks if another PDF is being generated
@@ -1866,7 +1866,7 @@ export const generateGRNPDF = async (data: GRNPDFData): Promise<Buffer> => {
   
   try {
     const executablePath = await getChromiumExecutable();
-    console.log('📄 Launching Chromium for GRN PDF...');
+    // console.log('📄 Launching Chromium for GRN PDF...');
     
     browser = await puppeteer.launch({
       headless: true,
@@ -1913,11 +1913,11 @@ export const generateGRNPDF = async (data: GRNPDFData): Promise<Buffer> => {
     });
     
     const result = Buffer.from(pdfBuffer);
-    console.log(`✅ GRN PDF generated (${result.length} bytes)`);
+    // console.log(`✅ GRN PDF generated (${result.length} bytes)`);
     return result;
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
-    console.error(`❌ GRN PDF generation failed: ${message}`);
+    // console.error(`❌ GRN PDF generation failed: ${message}`);
     throw new Error(`PDF generation failed: ${message}`);
   } finally {
     // CRITICAL: Always close browser AND release semaphore

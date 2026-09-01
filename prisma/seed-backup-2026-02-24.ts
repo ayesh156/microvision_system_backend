@@ -60,8 +60,6 @@ const prisma = new PrismaClient({
   },
 });
 
-console.log(`🔗 Using DB: ${(process.env.DIRECT_URL || process.env.DATABASE_URL || '').includes('5432') ? 'DIRECT (port 5432)' : 'POOLER (port 6543)'}`);
-
 // ==========================================
 // CONFIGURATION - Edit these as needed
 // ==========================================
@@ -339,17 +337,10 @@ const SUPPLIERS_DATA = [
 // ==========================================
 
 async function main() {
-  console.log('');
-  console.log('╔═══════════════════════════════════════════════════════════════╗');
-  console.log('║           🌱 ECOSYSTEM DATABASE SEEDING                       ║');
-  console.log('║              World-Class Sample Data                          ║');
-  console.log('╚═══════════════════════════════════════════════════════════════╝');
-  console.log('');
 
   // ==========================================
   // STEP 0: CLEAN EXISTING DATA
   // ==========================================
-  console.log('🧹 Cleaning existing data...');
   
   // Using DIRECT_URL (not PgBouncer), so sequential deleteMany works reliably
   await prisma.invoiceReminder.deleteMany();
@@ -373,14 +364,12 @@ async function main() {
   await prisma.passwordResetToken.deleteMany();
   await prisma.user.deleteMany();
   await prisma.shop.deleteMany();
-  
-  console.log('   ✅ Database cleaned successfully');
-  console.log('');
+
 
   // ==========================================
   // STEP 1: SUPER ADMIN
   // ==========================================
-  console.log('📌 STEP 1: Creating Super Admin...');
+
   
   const superAdminPassword = await hashPassword(CONFIG.SUPER_ADMIN.password);
   
@@ -402,13 +391,13 @@ async function main() {
       shopId: null,
     },
   });
-  console.log(`   ✅ SUPER_ADMIN: ${superAdmin.email} / ${CONFIG.SUPER_ADMIN.password}`);
-  console.log('');
+  // console.log(`   ✅ SUPER_ADMIN: ${superAdmin.email} / ${CONFIG.SUPER_ADMIN.password}`);
+  // console.log('');
 
   // ==========================================
   // STEP 2: CREATE SHOPS
   // ==========================================
-  console.log('📌 STEP 2: Creating Shops...');
+  // console.log('📌 STEP 2: Creating Shops...');
   
   // Shop 1: Eco-User
   const shop1 = await prisma.shop.upsert({
@@ -452,7 +441,7 @@ async function main() {
       ],
     },
   });
-  console.log(`   ✅ Shop 1: ${shop1.name} (${shop1.slug})`);
+  // console.log(`   ✅ Shop 1: ${shop1.name} (${shop1.slug})`);
 
   // Shop 2: Ecotec
   const shop2 = await prisma.shop.upsert({
@@ -482,7 +471,7 @@ async function main() {
       supplierOrderTemplate: `🛒 *NEW ORDER REQUEST*\n━━━━━━━━━━━━━━━━━━━━━\n\nHello {{supplierName}}! 👋\n\nThis is *{{shopName}}* reaching out for a new order.\n\n📅 *Date:* {{orderDate}}\n🏢 *Supplier:* {{supplierCompany}}\n\n━━━━━━━━━━━━━━━━━━━━━\n📦 *ORDER DETAILS:*\n━━━━━━━━━━━━━━━━━━━━━\n\nPlease share your:\n✅ Latest product catalog\n✅ Current stock availability\n✅ Best pricing for bulk orders\n✅ Expected delivery timeline\n\n━━━━━━━━━━━━━━━━━━━━━\n\nWe look forward to doing business with you! 🤝\n\n_Sent via {{shopName}} POS System_\n🌟 *Quality Products, Quality Service*\n📞 {{shopPhone}}\n📍 {{shopAddress}}`,
     },
   });
-  console.log(`   ✅ Shop 2: ${shop2.name} (${shop2.slug})`);
+  // console.log(`   ✅ Shop 2: ${shop2.name} (${shop2.slug})`);
 
   // Shop 3: TechZone Lanka (SuperAdmin's Shop) - Sri Lankan Fake Details
   const shop3 = await prisma.shop.upsert({
@@ -512,20 +501,20 @@ async function main() {
       supplierOrderTemplate: `🛒 *NEW ORDER REQUEST*\n━━━━━━━━━━━━━━━━━━━━━\n\nHello {{supplierName}}! 👋\n\nThis is *{{shopName}}* reaching out for a new order.\n\n📅 *Date:* {{orderDate}}\n🏢 *Supplier:* {{supplierCompany}}\n\n━━━━━━━━━━━━━━━━━━━━━\n📦 *ORDER DETAILS:*\n━━━━━━━━━━━━━━━━━━━━━\n\nPlease share your:\n✅ Latest product catalog\n✅ Current stock availability\n✅ Best pricing for bulk orders\n✅ Expected delivery timeline\n\n━━━━━━━━━━━━━━━━━━━━━\n\nWe look forward to doing business with you! 🤝\n\n_Sent via {{shopName}} POS System_\n🌟 *Quality Products, Quality Service*\n📞 {{shopPhone}}\n📍 {{shopAddress}}`,
     },
   });
-  console.log(`   ✅ Shop 3: ${shop3.name} (${shop3.slug}) [SuperAdmin's Shop]`);
+  // console.log(`   ✅ Shop 3: ${shop3.name} (${shop3.slug}) [SuperAdmin's Shop]`);
 
   // Assign SuperAdmin to Shop 3
   await prisma.user.update({
     where: { email: CONFIG.SUPER_ADMIN.email },
     data: { shopId: shop3.id },
   });
-  console.log(`   🔗 SuperAdmin assigned to ${shop3.name}`);
-  console.log('');
+  // console.log(`   🔗 SuperAdmin assigned to ${shop3.name}`);
+  // console.log('');
 
   // ==========================================
   // STEP 3: CREATE SHOP USERS
   // ==========================================
-  console.log('📌 STEP 3: Creating Shop Users...');
+  // console.log('📌 STEP 3: Creating Shop Users...');
   
   // Shop 1 Admin
   const shop1AdminPassword = await hashPassword(CONFIG.SHOP1.admin.password);
@@ -548,7 +537,7 @@ async function main() {
       lastLogin: new Date(),
     },
   });
-  console.log(`   ✅ Shop 1 ADMIN: ${shop1Admin.email} / ${CONFIG.SHOP1.admin.password}`);
+  // console.log(`   ✅ Shop 1 ADMIN: ${shop1Admin.email} / ${CONFIG.SHOP1.admin.password}`);
 
   // Shop 1 Manager
   const managerPassword = await hashPassword('manager123');
@@ -571,7 +560,7 @@ async function main() {
       lastLogin: new Date(),
     },
   });
-  console.log(`   ✅ Shop 1 MANAGER: ${shop1Manager.email} / manager123`);
+  // console.log(`   ✅ Shop 1 MANAGER: ${shop1Manager.email} / manager123`);
 
   // Shop 1 Staff
   const staffPassword = await hashPassword('staff123');
@@ -594,7 +583,7 @@ async function main() {
       lastLogin: new Date(),
     },
   });
-  console.log(`   ✅ Shop 1 STAFF: ${shop1Staff.email} / staff123`);
+  // console.log(`   ✅ Shop 1 STAFF: ${shop1Staff.email} / staff123`);
 
   // Shop 2 Admin
   const shop2AdminPassword = await hashPassword(CONFIG.SHOP2.admin.password);
@@ -617,7 +606,7 @@ async function main() {
       lastLogin: new Date(),
     },
   });
-  console.log(`   ✅ Shop 2 ADMIN: ${shop2Admin.email} / ${CONFIG.SHOP2.admin.password}`);
+  // console.log(`   ✅ Shop 2 ADMIN: ${shop2Admin.email} / ${CONFIG.SHOP2.admin.password}`);
 
   // Shop 2 Manager
   const shop2Manager = await prisma.user.upsert({
@@ -639,7 +628,7 @@ async function main() {
       lastLogin: new Date(),
     },
   });
-  console.log(`   ✅ Shop 2 MANAGER: ${shop2Manager.email} / manager123`);
+  // console.log(`   ✅ Shop 2 MANAGER: ${shop2Manager.email} / manager123`);
 
   // Shop 2 Staff
   const shop2Staff = await prisma.user.upsert({
@@ -661,8 +650,8 @@ async function main() {
       lastLogin: new Date(),
     },
   });
-  console.log(`   ✅ Shop 2 STAFF: ${shop2Staff.email} / staff123`);
-  console.log('');
+  // console.log(`   ✅ Shop 2 STAFF: ${shop2Staff.email} / staff123`);
+  // console.log('');
 
   // ==========================================
   // STEP 4: SEED DATA FOR BOTH SHOPS
@@ -674,28 +663,28 @@ async function main() {
   // Seed for Shop 2
   await seedShopData(shop2.id, 'Shop 2 (Ecotec)', shop2Admin.id);
 
-  console.log('');
-  console.log('╔═══════════════════════════════════════════════════════════════╗');
-  console.log('║           ✅ DATABASE SEEDING COMPLETE!                       ║');
-  console.log('╚═══════════════════════════════════════════════════════════════╝');
-  console.log('');
-  console.log('📝 Login Credentials Summary:');
-  console.log('─────────────────────────────────────────────────────────────────');
-  console.log('');
-  console.log('🛡️  SUPER ADMIN:');
-  console.log(`   Email: ${CONFIG.SUPER_ADMIN.email}`);
-  console.log(`   Password: ${CONFIG.SUPER_ADMIN.password}`);
-  console.log('');
-  console.log(`🏪 SHOP 1 (${CONFIG.SHOP1.name}):`);
-  console.log(`   ADMIN:   ${CONFIG.SHOP1.admin.email} / ${CONFIG.SHOP1.admin.password}`);
-  console.log(`   MANAGER: manager@ecotec.lk / manager123`);
-  console.log(`   STAFF:   staff@ecotec.lk / staff123`);
-  console.log('');
-  console.log(`🏪 SHOP 2 (${CONFIG.SHOP2.name}):`);
-  console.log(`   ADMIN:   ${CONFIG.SHOP2.admin.email} / ${CONFIG.SHOP2.admin.password}`);
-  console.log(`   MANAGER: manager2@ecotec.lk / manager123`);
-  console.log(`   STAFF:   staff2@ecotec.lk / staff123`);
-  console.log('');
+  // console.log('');
+  // console.log('╔═══════════════════════════════════════════════════════════════╗');
+  // console.log('║           ✅ DATABASE SEEDING COMPLETE!                       ║');
+  // console.log('╚═══════════════════════════════════════════════════════════════╝');
+  // console.log('');
+  // console.log('📝 Login Credentials Summary:');
+  // console.log('─────────────────────────────────────────────────────────────────');
+  // console.log('');
+  // console.log('🛡️  SUPER ADMIN:');
+  // console.log(`   Email: ${CONFIG.SUPER_ADMIN.email}`);
+  // console.log(`   Password: ${CONFIG.SUPER_ADMIN.password}`);
+  // console.log('');
+  // console.log(`🏪 SHOP 1 (${CONFIG.SHOP1.name}):`);
+  // console.log(`   ADMIN:   ${CONFIG.SHOP1.admin.email} / ${CONFIG.SHOP1.admin.password}`);
+  // console.log(`   MANAGER: manager@ecotec.lk / manager123`);
+  // console.log(`   STAFF:   staff@ecotec.lk / staff123`);
+  // console.log('');
+  // console.log(`🏪 SHOP 2 (${CONFIG.SHOP2.name}):`);
+  // console.log(`   ADMIN:   ${CONFIG.SHOP2.admin.email} / ${CONFIG.SHOP2.admin.password}`);
+  // console.log(`   MANAGER: manager2@ecotec.lk / manager123`);
+  // console.log(`   STAFF:   staff2@ecotec.lk / staff123`);
+  // console.log('');
 }
 
 // ==========================================
@@ -703,12 +692,12 @@ async function main() {
 // ==========================================
 
 async function seedShopData(shopId: string, shopName: string, adminId: string) {
-  console.log(`📌 Seeding ${shopName}...`);
+  // console.log(`📌 Seeding ${shopName}...`);
 
   // ==========================================
   // CATEGORIES (Batch)
   // ==========================================
-  console.log('   📁 Creating Categories...');
+  // console.log('   📁 Creating Categories...');
   await prisma.category.createMany({
     data: CATEGORIES_DATA.map(cat => ({
       name: cat.name,
@@ -718,12 +707,12 @@ async function seedShopData(shopId: string, shopName: string, adminId: string) {
   });
   const allCategories = await prisma.category.findMany({ where: { shopId } });
   const categoryMap = new Map(allCategories.map(c => [c.name, c.id]));
-  console.log(`      ✅ Created ${CATEGORIES_DATA.length} categories`);
+  // console.log(`      ✅ Created ${CATEGORIES_DATA.length} categories`);
 
   // ==========================================
   // BRANDS (Batch)
   // ==========================================
-  console.log('   🏷️  Creating Brands...');
+  // console.log('   🏷️  Creating Brands...');
   await prisma.brand.createMany({
     data: BRANDS_DATA.map(brand => ({
       name: brand.name,
@@ -734,12 +723,12 @@ async function seedShopData(shopId: string, shopName: string, adminId: string) {
   });
   const allBrands = await prisma.brand.findMany({ where: { shopId } });
   const brandMap = new Map(allBrands.map(b => [b.name, b.id]));
-  console.log(`      ✅ Created ${BRANDS_DATA.length} brands`);
+  // console.log(`      ✅ Created ${BRANDS_DATA.length} brands`);
 
   // ==========================================
   // PRODUCTS (Batch)
   // ==========================================
-  console.log('   📦 Creating Products...');
+  // console.log('   📦 Creating Products...');
   await prisma.product.createMany({
     data: PRODUCTS_DATA.map(product => {
       const uniqueBarcode = `${shopId.slice(0, 4)}-${product.barcode}`;
@@ -764,12 +753,12 @@ async function seedShopData(shopId: string, shopName: string, adminId: string) {
   });
   const allProducts = await prisma.product.findMany({ where: { shopId } });
   const productMap = new Map(allProducts.map(p => [p.name, p.id]));
-  console.log(`      ✅ Created ${PRODUCTS_DATA.length} products`);
+  // console.log(`      ✅ Created ${PRODUCTS_DATA.length} products`);
 
   // ==========================================
   // SUPPLIERS (Batch)
   // ==========================================
-  console.log('   🚚 Creating Suppliers...');
+  // console.log('   🚚 Creating Suppliers...');
   await prisma.supplier.createMany({
     data: SUPPLIERS_DATA.map(supplier => ({
       name: supplier.name,
@@ -783,12 +772,12 @@ async function seedShopData(shopId: string, shopName: string, adminId: string) {
   });
   const allSuppliers = await prisma.supplier.findMany({ where: { shopId } });
   const supplierMap = new Map(allSuppliers.map(s => [s.name, s.id]));
-  console.log(`      ✅ Created ${SUPPLIERS_DATA.length} suppliers`);
+  // console.log(`      ✅ Created ${SUPPLIERS_DATA.length} suppliers`);
 
   // ==========================================
   // CUSTOMERS (Batch)
   // ==========================================
-  console.log('   👥 Creating Customers...');
+  // console.log('   👥 Creating Customers...');
   await prisma.customer.createMany({
     data: CUSTOMERS_DATA.map(customer => {
       const hasCredit = 'credit' in customer && customer.credit;
@@ -812,12 +801,12 @@ async function seedShopData(shopId: string, shopName: string, adminId: string) {
   });
   const allCustomers = await prisma.customer.findMany({ where: { shopId } });
   const customerMap = new Map(allCustomers.map(c => [c.name, c.id]));
-  console.log(`      ✅ Created ${CUSTOMERS_DATA.length} customers`);
+  // console.log(`      ✅ Created ${CUSTOMERS_DATA.length} customers`);
 
   // ==========================================
   // GRNs (Sample GRNs - using already-fetched data)
   // ==========================================
-  console.log('   📥 Creating GRNs...');
+  // console.log('   📥 Creating GRNs...');
   
   const products = allProducts.slice(0, 10);
   const suppliers = allSuppliers.slice(0, 3);
@@ -876,13 +865,13 @@ async function seedShopData(shopId: string, shopName: string, adminId: string) {
         },
       });
     }
-    console.log(`      ✅ Created 4 sample GRNs`);
+    // console.log(`      ✅ Created 4 sample GRNs`);
   }
 
   // ==========================================
   // INVOICES (Various statuses - batch payments & stock)
   // ==========================================
-  console.log('   🧾 Creating Invoices...');
+  // console.log('   🧾 Creating Invoices...');
   
   const customers = allCustomers.slice(0, 10);
   
@@ -1032,13 +1021,13 @@ async function seedShopData(shopId: string, shopName: string, adminId: string) {
       });
     }
     
-    console.log(`      ✅ Created 8 invoices, ${paymentRecords.length} payments, ${stockMovements.length} stock movements`);
+    // console.log(`      ✅ Created 8 invoices, ${paymentRecords.length} payments, ${stockMovements.length} stock movements`);
   }
 
   // ==========================================
   // REMINDERS (Batch)
   // ==========================================
-  console.log('   📨 Creating Reminders...');
+  // console.log('   📨 Creating Reminders...');
   
   const unpaidInvoices = await prisma.invoice.findMany({
     where: { shopId, status: { in: [InvoiceStatus.UNPAID, InvoiceStatus.HALFPAY] } },
@@ -1084,12 +1073,12 @@ async function seedShopData(shopId: string, shopName: string, adminId: string) {
     await prisma.gRNReminder.createMany({ data: grnReminderData });
   }
   
-  console.log(`      ✅ Created ${invoiceReminderData.length} invoice + ${grnReminderData.length} GRN reminders`);
+  // console.log(`      ✅ Created ${invoiceReminderData.length} invoice + ${grnReminderData.length} GRN reminders`);
 
   // ==========================================
   // INVOICE ITEM HISTORY (Single record)
   // ==========================================
-  console.log('   📜 Creating Invoice Item History...');
+  // console.log('   📜 Creating Invoice Item History...');
   
   const recentInvoice = await prisma.invoice.findFirst({
     where: { shopId, status: InvoiceStatus.FULLPAID },
@@ -1114,10 +1103,10 @@ async function seedShopData(shopId: string, shopName: string, adminId: string) {
       },
     });
   }
-  console.log(`      ✅ Created sample invoice item history`);
+  // console.log(`      ✅ Created sample invoice item history`);
 
-  console.log(`   ✅ ${shopName} seeding complete!`);
-  console.log('');
+  // console.log(`   ✅ ${shopName} seeding complete!`);
+  // console.log('');
 }
 
 // ==========================================
@@ -1129,7 +1118,7 @@ main()
     await prisma.$disconnect();
   })
   .catch(async (e) => {
-    console.error('❌ Seeding failed:', e);
+    // console.error('❌ Seeding failed:', e);
     await prisma.$disconnect();
     process.exit(1);
   });

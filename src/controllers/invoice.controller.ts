@@ -347,7 +347,7 @@ export const createInvoice = async (
       shopId, // Can be provided in request body
     } = req.body;
 
-    console.log('📝 Creating invoice:', { customerId, itemCount: items?.length, tax, discount, dueDate, paymentMethod, salesChannel, paidAmount });
+    // console.log('📝 Creating invoice:', { customerId, itemCount: items?.length, tax, discount, dueDate, paymentMethod, salesChannel, paidAmount });
 
     // 🔐 SECURITY: Verify user has shop access
     if (!req.user?.shopId) {
@@ -409,7 +409,7 @@ export const createInvoice = async (
         if (product) {
           validProductId = item.productId;
         } else {
-          console.log(`⚠️ Product not found: ${item.productId} (${item.productName}) - treating as quick-add item`);
+          // console.log(`⚠️ Product not found: ${item.productId} (${item.productName}) - treating as quick-add item`);
         }
       }
 
@@ -736,7 +736,7 @@ export const updateInvoice = async (
               });
             }
 
-            console.log(`📦 Stock adjusted for product ${productId}: ${difference > 0 ? '-' : '+'}${Math.abs(difference)} (old: ${oldQty}, new: ${newQty})`);
+            // console.log(`📦 Stock adjusted for product ${productId}: ${difference > 0 ? '-' : '+'}${Math.abs(difference)} (old: ${oldQty}, new: ${newQty})`);
           }
         }
         
@@ -1434,7 +1434,7 @@ export const sendInvoiceViaEmail = async (
       });
     }
 
-    console.log(`✅ Invoice email sent to ${invoice.customer.email} for Invoice #${invoice.invoiceNumber}`);
+    // console.log(`✅ Invoice email sent to ${invoice.customer.email} for Invoice #${invoice.invoiceNumber}`);
 
     // Update invoice with email sent status
     try {
@@ -1446,7 +1446,7 @@ export const sendInvoiceViaEmail = async (
         },
       });
     } catch (dbErr) {
-      console.error(`⚠️ Failed to update emailSent status for Invoice #${invoice.invoiceNumber}:`, dbErr);
+      // console.error(`⚠️ Failed to update emailSent status for Invoice #${invoice.invoiceNumber}:`, dbErr);
     }
 
     res.status(200).json({
@@ -1732,7 +1732,7 @@ export const sendInvoiceEmailWithPDF = async (
       });
     }
 
-    console.log(`✅ Invoice email sent to ${invoice.customer.email} for Invoice #${invoice.invoiceNumber}`);
+    // console.log(`✅ Invoice email sent to ${invoice.customer.email} for Invoice #${invoice.invoiceNumber}`);
 
     // Update invoice with email sent status
     try {
@@ -1744,7 +1744,7 @@ export const sendInvoiceEmailWithPDF = async (
         },
       });
     } catch (dbErr) {
-      console.error(`⚠️ Failed to update emailSent status for Invoice #${invoice.invoiceNumber}:`, dbErr);
+      // console.error(`⚠️ Failed to update emailSent status for Invoice #${invoice.invoiceNumber}:`, dbErr);
     }
 
     res.status(200).json({

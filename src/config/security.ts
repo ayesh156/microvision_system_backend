@@ -57,7 +57,7 @@ const validateSecurityConfig = () => {
     const errorMessage = `Security Configuration Errors:\n${errors.map(e => `  - ${e}`).join('\n')}`;
     // In production, we should ideally throw, but for smoother deployment troubleshooting
     // we will log a critical error and allow fallback to generated secrets
-    console.error(`\n🚨 CRITICAL SECURITY WARNING: ${errorMessage}\nUSING GENERATED FALLBACK SECRETS - SESSIONS WILL RESET ON RESTART\n`);
+    // console.error(`\n🚨 CRITICAL SECURITY WARNING: ${errorMessage}\nUSING GENERATED FALLBACK SECRETS - SESSIONS WILL RESET ON RESTART\n`);
   }
 };
 

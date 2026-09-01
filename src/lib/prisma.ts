@@ -61,9 +61,9 @@ function ensurePoolerParams(): void {
   
   if (params.length > 0) {
     process.env.DATABASE_URL = url + separator + params.join('&');
-    console.log('🔧 Auto-added PgBouncer + TCP keep-alive params to DATABASE_URL');
-    console.log('   connection_limit=3 | pool_timeout=20 | connect_timeout=30');
-    console.log('   keepalives=1 | idle=30s | interval=10s | count=3');
+    // console.log('🔧 Auto-added PgBouncer + TCP keep-alive params to DATABASE_URL');
+    // console.log('   connection_limit=3 | pool_timeout=20 | connect_timeout=30');
+    // console.log('   keepalives=1 | idle=30s | interval=10s | count=3');
   }
 }
 
@@ -169,7 +169,7 @@ async function reconnect(client: PrismaClient): Promise<void> {
   const now = Date.now();
   if (now - lastConnectAttempt < RECONNECT_COOLDOWN_MS) {
     const remaining = Math.round((RECONNECT_COOLDOWN_MS - (now - lastConnectAttempt)) / 1000);
-    console.log(`⏳ Reconnect cooldown active (${remaining}s remaining)`);
+    // console.log(`⏳ Reconnect cooldown active (${remaining}s remaining)`);
     // Don't throw — let the caller fall through to query retry.
     // Throwing here previously caused instant failures during cooldown.
     return;
@@ -180,7 +180,7 @@ async function reconnect(client: PrismaClient): Promise<void> {
 
   reconnectPromise = (async () => {
     try {
-      console.log('🔄 Reconnecting to database...');
+      // console.log('🔄 Reconnecting to database...');
       // Do NOT call $disconnect() — it destroys all active connections in the pool,
       // killing any in-flight queries from other requests.
       await new Promise(resolve => setTimeout(resolve, RECONNECT_PAUSE_MS));
@@ -198,13 +198,13 @@ async function reconnect(client: PrismaClient): Promise<void> {
         await client.$queryRawUnsafe('SELECT 1');
         isConnected = true;
         lastSuccessfulQuery = Date.now();
-        console.log('✅ Database reconnected successfully');
+        // console.log('✅ Database reconnected successfully');
       } finally {
         bypassMiddleware = false;
       }
     } catch (err) {
       isConnected = false;
-      console.error('❌ Database reconnection failed:', err instanceof Error ? err.message.substring(0, 200) : err);
+      // console.error('❌ Database reconnection failed:', err instanceof Error ? err.message.substring(0, 200) : err);
       throw err;
     } finally {
       isReconnecting = false;
@@ -256,7 +256,7 @@ function createPrismaClient(): PrismaClient {
       const model = params.model || 'unknown';
       const action = params.action || 'unknown';
       console.warn(`⚠️ DB error on ${model}.${action}: ${(error as Error).message?.substring(0, 120)}`);
-      console.log(`🔁 Attempting retry for ${model}.${action}...`);
+      // console.log(`🔁 Attempting retry for ${model}.${action}...`);
 
       try {
         // Wait for reconnection (or trigger one). This is the key change:
@@ -273,12 +273,12 @@ function createPrismaClient(): PrismaClient {
         const retryResult = await next(params);
         isConnected = true;
         lastSuccessfulQuery = Date.now();
-        console.log(`✅ Retry succeeded for ${model}.${action}`);
+        // console.log(`✅ Retry succeeded for ${model}.${action}`);
         return retryResult;
       } catch (retryError) {
         // Retry also failed — surface the error
         isConnected = false;
-        console.error(`❌ Retry failed for ${model}.${action}: ${(retryError as Error).message?.substring(0, 120)}`);
+        // console.error(`❌ Retry failed for ${model}.${action}: ${(retryError as Error).message?.substring(0, 120)}`);
         throw retryError;
       }
     }
@@ -375,7 +375,7 @@ async function keepAlivePing(): Promise<void> {
     lastSuccessfulQuery = Date.now();
     if (!isConnected) {
       isConnected = true;
-      console.log('💓 Keep-alive: Connection restored');
+      // console.log('💓 Keep-alive: Connection restored');
     }
   } catch (err) {
     if (isConnected) {
@@ -390,14 +390,14 @@ async function keepAlivePing(): Promise<void> {
 function startKeepAlive(): void {
   if (keepAliveInterval) return;
   keepAliveInterval = setInterval(keepAlivePing, KEEP_ALIVE_INTERVAL_MS);
-  console.log(`💓 Keep-alive started (every ${KEEP_ALIVE_INTERVAL_MS / 1000}s — Supabase PgBouncer idle timeout is ~60s)`);
+  // console.log(`💓 Keep-alive started (every ${KEEP_ALIVE_INTERVAL_MS / 1000}s — Supabase PgBouncer idle timeout is ~60s)`);
 }
 
 export function stopKeepAlive(): void {
   if (keepAliveInterval) {
     clearInterval(keepAliveInterval);
     keepAliveInterval = null;
-    console.log('💓 Keep-alive stopped');
+    // console.log('💓 Keep-alive stopped');
   }
 }
 
@@ -431,7 +431,7 @@ export const connectWithRetry = async (retries = 5, delay = 2000): Promise<void>
       lastConnectAttempt = Date.now();
       lastHealthProbe = Date.now();
       lastSuccessfulQuery = Date.now();
-      console.log(`✅ Database connected (attempt ${attempt}/${retries})`);
+      // console.log(`✅ Database connected (attempt ${attempt}/${retries})`);
       
       // Signal that DB is ready — unblocks waiting HTTP requests
       if (dbReadyResolve) {
@@ -446,17 +446,17 @@ export const connectWithRetry = async (retries = 5, delay = 2000): Promise<void>
       bypassMiddleware = false;
       isConnected = false;
       const msg = error instanceof Error ? error.message.substring(0, 150) : String(error);
-      console.error(`❌ DB connect attempt ${attempt}/${retries}: ${msg}`);
+      // console.error(`❌ DB connect attempt ${attempt}/${retries}: ${msg}`);
       if (attempt < retries) {
         const waitTime = delay * attempt; // Progressive backoff: 2s, 4s, 6s, 8s, 10s (total=30s max)
-        console.log(`⏳ Waiting ${waitTime / 1000}s before retry...`);
+        // console.log(`⏳ Waiting ${waitTime / 1000}s before retry...`);
         await new Promise(resolve => setTimeout(resolve, waitTime));
       }
     }
   }
-  console.error('🚨 All startup connection attempts failed.');
-  console.error('🚨 DATABASE_URL set:', !!process.env.DATABASE_URL);
-  console.error('🚨 URL prefix:', process.env.DATABASE_URL ? process.env.DATABASE_URL.substring(0, 40) + '...' : 'NOT SET');
+  // console.error('🚨 All startup connection attempts failed.');
+  // console.error('🚨 DATABASE_URL set:', !!process.env.DATABASE_URL);
+  // console.error('🚨 URL prefix:', process.env.DATABASE_URL ? process.env.DATABASE_URL.substring(0, 40) + '...' : 'NOT SET');
   
   // Resolve dbReady even on failure so requests don't hang forever
   // (they'll get a proper 503 from the error handler instead)

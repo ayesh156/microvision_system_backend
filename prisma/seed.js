@@ -68,8 +68,8 @@ function main() {
         return __generator(this, function (_q) {
             switch (_q.label) {
                 case 0:
-                    console.log('🌱 Starting seed...');
-                    console.log('');
+                    // console.log('🌱 Starting seed...');
+                    // console.log('');
                     return [4 /*yield*/, prisma.shop.upsert({
                             where: { slug: 'ecotech' },
                             update: {},
@@ -90,7 +90,7 @@ function main() {
                         })];
                 case 1:
                     ecotechShop = _q.sent();
-                    console.log("\uD83C\uDFEA Created shop: ".concat(ecotechShop.name, " (").concat(ecotechShop.slug, ")"));
+                    // console.log("\uD83C\uDFEA Created shop: ".concat(ecotechShop.name, " (").concat(ecotechShop.slug, ")"));
                     return [4 /*yield*/, bcrypt.hash('ecotech123', 10)];
                 case 2:
                     hashedPassword = _q.sent();
@@ -109,7 +109,7 @@ function main() {
                         })];
                 case 3:
                     ecotechUser = _q.sent();
-                    console.log("\u2705 Created user: ".concat(ecotechUser.name, " (").concat(ecotechUser.email, ")"));
+                    // console.log("\u2705 Created user: ".concat(ecotechUser.name, " (").concat(ecotechUser.email, ")"));
                     _b = (_a = prisma.user).upsert;
                     _l = {
                         where: { email: 'staff@ecotech.lk' },
@@ -146,7 +146,7 @@ function main() {
                             _o)])];
                 case 7:
                     managerUser = _q.sent();
-                    console.log("\u2705 Created 3 users (Admin, Manager, Staff) for ".concat(ecotechShop.name));
+                    // console.log("\u2705 Created 3 users (Admin, Manager, Staff) for ".concat(ecotechShop.name));
                     categoryData = [
                         { name: 'Processors', description: 'CPUs and processors' },
                         { name: 'Graphics Cards', description: 'GPUs and video cards' },
@@ -178,7 +178,7 @@ function main() {
                     _i++;
                     return [3 /*break*/, 8];
                 case 11:
-                    console.log("\u2705 Created ".concat(Object.keys(categories).length, " categories"));
+                    // console.log("\u2705 Created ".concat(Object.keys(categories).length, " categories"));
                     brandData = [
                         { name: 'AMD', description: 'Advanced Micro Devices' },
                         { name: 'Intel', description: 'Intel Corporation' },
@@ -216,7 +216,7 @@ function main() {
                     _e++;
                     return [3 /*break*/, 12];
                 case 15:
-                    console.log("\u2705 Created ".concat(Object.keys(brands).length, " brands"));
+                    // console.log("\u2705 Created ".concat(Object.keys(brands).length, " brands"));
                     customerData = [
                         { id: '1', name: 'Kasun Perera', email: 'kasun@gmail.com', phone: '078-3233760', address: 'No. 12, Galle Road, Colombo', totalSpent: 580000, totalOrders: 5, creditBalance: 0, creditLimit: 100000, creditStatus: client_1.CreditStatus.CLEAR },
                         { id: '2', name: 'Nimali Fernando', email: 'nimali@email.com', phone: '078-3233760', address: '12A, Kandy Rd, Kurunegala', totalSpent: 320000, totalOrders: 3, creditBalance: 103500, creditLimit: 200000, creditStatus: client_1.CreditStatus.ACTIVE },
@@ -244,7 +244,7 @@ function main() {
                     _f++;
                     return [3 /*break*/, 16];
                 case 19:
-                    console.log("\u2705 Created ".concat(customerData.length, " customers"));
+                    // console.log("\u2705 Created ".concat(customerData.length, " customers"));
                     productData = [
                         { id: '1', name: 'AMD Ryzen 9 7950X', category: 'Processors', brand: 'AMD', price: 185000, costPrice: 155000, stock: 12, serialNumber: '70451234', barcode: '4938271650123', warranty: '3 years' },
                         { id: '2', name: 'Intel Core i9-14900K', category: 'Processors', brand: 'Intel', price: 195000, costPrice: 165000, stock: 8, serialNumber: '70452345', barcode: '4938271650124', warranty: '3 years' },
@@ -296,7 +296,7 @@ function main() {
                     _g++;
                     return [3 /*break*/, 20];
                 case 23:
-                    console.log("\u2705 Created ".concat(productData.length, " products"));
+                    // console.log("\u2705 Created ".concat(productData.length, " products"));
                     invoiceData = [
                         {
                             id: '10260001',
@@ -610,37 +610,37 @@ function main() {
                     _h++;
                     return [3 /*break*/, 24];
                 case 34:
-                    console.log("\u2705 Created ".concat(invoiceData.length, " invoices with items and payments"));
-                    console.log('');
-                    console.log('🎉 Seed completed successfully!');
-                    console.log('');
-                    console.log('═══════════════════════════════════════════════════');
-                    console.log('📊 SUMMARY');
-                    console.log('═══════════════════════════════════════════════════');
-                    console.log('');
-                    console.log("\uD83C\uDFEA Shop: ".concat(ecotechShop.name));
-                    console.log("   Slug: ".concat(ecotechShop.slug));
-                    console.log("   Email: ".concat(ecotechShop.email));
-                    console.log('');
-                    console.log('📈 Data Created:');
-                    console.log("   \u2022 Users: 3");
-                    console.log("   \u2022 Categories: ".concat(Object.keys(categories).length));
-                    console.log("   \u2022 Brands: ".concat(Object.keys(brands).length));
-                    console.log("   \u2022 Customers: ".concat(customerData.length));
-                    console.log("   \u2022 Products: ".concat(productData.length));
-                    console.log("   \u2022 Invoices: ".concat(invoiceData.length));
-                    console.log('');
-                    console.log('═══════════════════════════════════════════════════');
-                    console.log('🔑 LOGIN CREDENTIALS');
-                    console.log('═══════════════════════════════════════════════════');
-                    console.log('');
-                    console.log('   Role      │ Email                │ Password');
-                    console.log('   ──────────┼──────────────────────┼───────────');
-                    console.log('   Admin     │ ecotech@ecotech.lk   │ ecotech123');
-                    console.log('   Manager   │ manager@ecotech.lk   │ manager123');
-                    console.log('   Staff     │ staff@ecotech.lk     │ staff123');
-                    console.log('');
-                    console.log('═══════════════════════════════════════════════════');
+                    // console.log("\u2705 Created ".concat(invoiceData.length, " invoices with items and payments"));
+                    // console.log('');
+                    // console.log('🎉 Seed completed successfully!');
+                    // console.log('');
+                    // console.log('═══════════════════════════════════════════════════');
+                    // console.log('📊 SUMMARY');
+                    // console.log('═══════════════════════════════════════════════════');
+                    // console.log('');
+                    // console.log("\uD83C\uDFEA Shop: ".concat(ecotechShop.name));
+                    // console.log("   Slug: ".concat(ecotechShop.slug));
+                    // console.log("   Email: ".concat(ecotechShop.email));
+                    // console.log('');
+                    // console.log('📈 Data Created:');
+                    // console.log("   \u2022 Users: 3");
+                    // console.log("   \u2022 Categories: ".concat(Object.keys(categories).length));
+                    // console.log("   \u2022 Brands: ".concat(Object.keys(brands).length));
+                    // console.log("   \u2022 Customers: ".concat(customerData.length));
+                    // console.log("   \u2022 Products: ".concat(productData.length));
+                    // console.log("   \u2022 Invoices: ".concat(invoiceData.length));
+                    // console.log('');
+                    // console.log('═══════════════════════════════════════════════════');
+                    // console.log('🔑 LOGIN CREDENTIALS');
+                    // console.log('═══════════════════════════════════════════════════');
+                    // console.log('');
+                    // console.log('   Role      │ Email                │ Password');
+                    // console.log('   ──────────┼──────────────────────┼───────────');
+                    // console.log('   Admin     │ ecotech@ecotech.lk   │ ecotech123');
+                    // console.log('   Manager   │ manager@ecotech.lk   │ manager123');
+                    // console.log('   Staff     │ staff@ecotech.lk     │ staff123');
+                    // console.log('');
+                    // console.log('═══════════════════════════════════════════════════');
                     return [2 /*return*/];
             }
         });
@@ -648,7 +648,7 @@ function main() {
 }
 main()
     .catch(function (e) {
-    console.error('❌ Seed failed:', e);
+    // console.error('❌ Seed failed:', e);
     process.exit(1);
 })
     .finally(function () { return __awaiter(void 0, void 0, void 0, function () {

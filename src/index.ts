@@ -18,7 +18,7 @@ const envPaths = [
 
 for (const envPath of envPaths) {
   if (fs.existsSync(envPath)) {
-    console.log(`📁 Loading .env from: ${envPath}`);
+    // console.log(`📁 Loading .env from: ${envPath}`);
     dotenv.config({ path: envPath });
     break;
   }
@@ -55,7 +55,7 @@ const isProduction = process.env.NODE_ENV === "production";
 // TRUST PROXY - Required for Render.com & Contabo (behind reverse proxy)
 // ===================================
 app.set("trust proxy", 1);
-console.log(
+// console.log(
   `🔒 Trust proxy set to 1 (${isProduction ? "production" : "development"})`,
 );
 
@@ -244,7 +244,7 @@ app.use(
 // Serve production frontend build assets in production mode
 if (isProduction) {
   const frontendDistPath = path.join(process.cwd(), "..", "frontend", "dist");
-  console.log(`📦 Serving static frontend from: ${frontendDistPath}`);
+  // console.log(`📦 Serving static frontend from: ${frontendDistPath}`);
 
   if (fs.existsSync(frontendDistPath)) {
     app.use(express.static(frontendDistPath));
@@ -350,17 +350,17 @@ app.use(errorHandler);
 // ===================================
 const startServer = async () => {
   app.listen(PORT, () => {
-    console.log(`🚀 Server running on http://localhost:${PORT}`);
-    console.log(`📊 Environment: ${process.env.NODE_ENV || "development"}`);
-    console.log(`📡 API available at http://localhost:${PORT}${API_PREFIX}`);
-    console.log(`📡 API Test URL at http://localhost:${PORT}/api/test`);
+    // console.log(`🚀 Server running on http://localhost:${PORT}`);
+    // console.log(`📊 Environment: ${process.env.NODE_ENV || "development"}`);
+    // console.log(`📡 API available at http://localhost:${PORT}${API_PREFIX}`);
+    // console.log(`📡 API Test URL at http://localhost:${PORT}/api/test`);
   });
 
   try {
     await connectWithRetry(5, 2000);
-    console.log("📦 Database initialization complete");
+    // console.log("📦 Database initialization complete");
   } catch (err) {
-    console.error(
+    // console.error(
       "⚠️ Database pre-connect failed, per-request retry is still active:",
       err instanceof Error ? err.message : err,
     );
@@ -373,9 +373,9 @@ export default app;
 
 
 process.on('uncaughtException', (err) => {
-  console.error('🛡️ Process Safety: Uncaught Exception caught:', err.message);
+  // console.error('🛡️ Process Safety: Uncaught Exception caught:', err.message);
 });
 
 process.on('unhandledRejection', (reason) => {
-  console.error('🛡️ Process Safety: Unhandled Rejection caught:', reason);
+  // console.error('🛡️ Process Safety: Unhandled Rejection caught:', reason);
 });
