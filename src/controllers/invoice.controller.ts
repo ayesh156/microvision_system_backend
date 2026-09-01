@@ -1446,7 +1446,7 @@ export const sendInvoiceViaEmail = async (
         },
       });
     } catch (dbErr) {
-      // console.error(`⚠️ Failed to update emailSent status for Invoice #${invoice.invoiceNumber}:`, dbErr);
+      console.error(`⚠️ Failed to update emailSent status for Invoice #${invoice.invoiceNumber}:`, dbErr);
     }
 
     res.status(200).json({
@@ -1744,7 +1744,7 @@ export const sendInvoiceEmailWithPDF = async (
         },
       });
     } catch (dbErr) {
-      // console.error(`⚠️ Failed to update emailSent status for Invoice #${invoice.invoiceNumber}:`, dbErr);
+      console.error(`⚠️ Failed to update emailSent status for Invoice #${invoice.invoiceNumber}:`, dbErr);
     }
 
     res.status(200).json({

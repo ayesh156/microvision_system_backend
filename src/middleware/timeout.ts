@@ -27,7 +27,7 @@ export const routeTimeout = (ms: number, message?: string) => {
 
     const timer = setTimeout(() => {
       if (!res.headersSent) {
-        // console.error(`⏰ Route timeout after ${ms / 1000}s: ${req.method} ${req.originalUrl}`);
+        console.error(`⏰ Route timeout after ${ms / 1000}s: ${req.method} ${req.originalUrl}`);
         res.status(504).json({
           success: false,
           message: message || `Request timed out after ${ms / 1000} seconds. The operation took too long.`,

@@ -1000,7 +1000,7 @@ export const generateInvoicePDF = async (data: InvoicePDFData): Promise<Buffer> 
     return result;
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
-    // console.error(`❌ Invoice PDF generation failed: ${message}`);
+    console.error(`❌ Invoice PDF generation failed: ${message}`);
     throw new Error(`PDF generation failed: ${message}`);
   } finally {
     // CRITICAL: Always close browser AND release semaphore
@@ -1917,7 +1917,7 @@ export const generateGRNPDF = async (data: GRNPDFData): Promise<Buffer> => {
     return result;
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
-    // console.error(`❌ GRN PDF generation failed: ${message}`);
+    console.error(`❌ GRN PDF generation failed: ${message}`);
     throw new Error(`PDF generation failed: ${message}`);
   } finally {
     // CRITICAL: Always close browser AND release semaphore

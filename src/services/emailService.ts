@@ -168,7 +168,7 @@ const sendViaResend = async (mailOptions: any): Promise<{ messageId: string }> =
 
   if (!response.ok) {
     const errorMsg = (data as any)?.message || (data as any)?.error || JSON.stringify(data);
-    // console.error(`❌ [Resend] API Error (${response.status}): ${errorMsg}`);
+    console.error(`❌ [Resend] API Error (${response.status}): ${errorMsg}`);
     throw new Error(`Resend API error (${response.status}): ${errorMsg}`);
   }
 
@@ -286,7 +286,7 @@ const sendMailWithRetry = async (mailOptions: any): Promise<{ messageId: string 
       return await sendViaResend(mailOptions);
     } catch (error) {
       const msg = error instanceof Error ? error.message : 'Unknown';
-      // console.error(`❌ [Resend] Failed: ${msg}`);
+      console.error(`❌ [Resend] Failed: ${msg}`);
       
       // If Resend fails AND SMTP is configured, try SMTP as last resort
       const config = getEmailConfig();
@@ -296,7 +296,7 @@ const sendMailWithRetry = async (mailOptions: any): Promise<{ messageId: string 
           return await sendViaSMTP(mailOptions);
         } catch (smtpError) {
           const smtpMsg = smtpError instanceof Error ? smtpError.message : 'Unknown';
-          // console.error(`❌ [SMTP Fallback] Also failed: ${smtpMsg}`);
+          console.error(`❌ [SMTP Fallback] Also failed: ${smtpMsg}`);
         }
       }
       
@@ -309,15 +309,15 @@ const sendMailWithRetry = async (mailOptions: any): Promise<{ messageId: string 
     return await sendViaSMTP(mailOptions);
   } catch (error) {
     const msg = error instanceof Error ? error.message : 'Unknown';
-    // console.error(`❌ [SMTP] All attempts failed: ${msg}`);
-    // console.error(`🚨 ════════════════════════════════════════════════════`);
-    // console.error(`🚨 SMTP is blocked on this platform!`);
-    // console.error(`🚨 SOLUTION: Use Resend (free HTTP email API)`);
-    // console.error(`🚨 1. Sign up at https://resend.com (free)`);
-    // console.error(`🚨 2. Get your API key`);
-    // console.error(`🚨 3. Add RESEND_API_KEY env var on Render`);
-    // console.error(`🚨 4. (Optional) Add RESEND_FROM for custom sender`);
-    // console.error(`🚨 ════════════════════════════════════════════════════`);
+    console.error(`❌ [SMTP] All attempts failed: ${msg}`);
+    console.error(`🚨 ════════════════════════════════════════════════════`);
+    console.error(`🚨 SMTP is blocked on this platform!`);
+    console.error(`🚨 SOLUTION: Use Resend (free HTTP email API)`);
+    console.error(`🚨 1. Sign up at https://resend.com (free)`);
+    console.error(`🚨 2. Get your API key`);
+    console.error(`🚨 3. Add RESEND_API_KEY env var on Render`);
+    console.error(`🚨 4. (Optional) Add RESEND_FROM for custom sender`);
+    console.error(`🚨 ════════════════════════════════════════════════════`);
     throw new Error(`Failed to send email: SMTP connection timeout. Set RESEND_API_KEY for cloud deployment.`);
   }
 };
@@ -688,7 +688,7 @@ export const sendInvoiceEmail = async (data: InvoiceEmailData): Promise<{ succes
   try {
     // Check if ANY email provider is configured (Resend OR SMTP)
     if (!isEmailConfigured()) {
-      // console.error('❌ No email provider configured. Cannot send invoice email.');
+      console.error('❌ No email provider configured. Cannot send invoice email.');
       if (process.env.NODE_ENV !== 'production') {
         // console.log('📧 [DEV MODE] Invoice email would be sent to:', data.email);
         return { success: true, messageId: 'dev-mode-no-email-sent' };
@@ -715,7 +715,7 @@ export const sendInvoiceEmail = async (data: InvoiceEmailData): Promise<{ succes
     return { success: true, messageId: result.messageId };
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown email error';
-    // console.error('❌ Failed to send invoice email:', errorMessage);
+    console.error('❌ Failed to send invoice email:', errorMessage);
     resetTransporter();
     return { success: false, error: errorMessage };
   }
@@ -731,7 +731,7 @@ export const sendInvoiceWithPDF = async (
   try {
     // Check if ANY email provider is configured (Resend OR SMTP)
     if (!isEmailConfigured()) {
-      // console.error('❌ No email provider configured. Cannot send invoice email with PDF.');
+      console.error('❌ No email provider configured. Cannot send invoice email with PDF.');
       if (process.env.NODE_ENV !== 'production') {
         // console.log('📧 [DEV MODE] Invoice email with PDF would be sent to:', data.email);
         return { success: true, messageId: 'dev-mode-no-email-sent', hasPdfAttachment: !!pdfBufferOrBase64 };
@@ -791,7 +791,7 @@ export const sendInvoiceWithPDF = async (
     return { success: true, messageId: result.messageId, hasPdfAttachment };
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown email error';
-    // console.error('❌ Failed to send invoice email with PDF:', errorMessage);
+    console.error('❌ Failed to send invoice email with PDF:', errorMessage);
     resetTransporter();
     return { success: false, error: errorMessage };
   }
@@ -991,7 +991,7 @@ export const sendPasswordResetOTP = async (data: OTPEmailData): Promise<SendOTPR
   try {
     // Check if ANY email provider is configured (Resend OR SMTP)
     if (!isEmailConfigured()) {
-      // console.error('❌ No email provider configured. Cannot send email.');
+      console.error('❌ No email provider configured. Cannot send email.');
       // In development, log the OTP to console
       if (process.env.NODE_ENV !== 'production') {
         // console.log('📧 [DEV MODE] Password Reset OTP for', data.email, ':', data.otp);
@@ -1019,7 +1019,7 @@ export const sendPasswordResetOTP = async (data: OTPEmailData): Promise<SendOTPR
     return { success: true, messageId: result.messageId };
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown email error';
-    // console.error('❌ Failed to send OTP email:', errorMessage);
+    console.error('❌ Failed to send OTP email:', errorMessage);
     resetTransporter();
     return { success: false, error: errorMessage };
   }
@@ -1055,7 +1055,7 @@ export const verifyEmailConnection = async (): Promise<boolean> => {
     // console.log('✅ Email service: SMTP connected successfully');
     return true;
   } catch (error) {
-    // console.error('❌ Email service connection failed:', error);
+    console.error('❌ Email service connection failed:', error);
     return false;
   }
 };
@@ -1402,7 +1402,7 @@ export const sendGRNWithPDF = async (
   try {
     // Check if ANY email provider is configured (Resend OR SMTP)
     if (!isEmailConfigured()) {
-      // console.error('❌ No email provider configured. Cannot send GRN email.');
+      console.error('❌ No email provider configured. Cannot send GRN email.');
       if (process.env.NODE_ENV !== 'production') {
         // console.log('📧 [DEV MODE] GRN email would be sent to:', data.email);
         return { success: true, messageId: 'dev-mode-no-email-sent', hasPdfAttachment: !!pdfBase64 };
@@ -1457,7 +1457,7 @@ export const sendGRNWithPDF = async (
     return { success: true, messageId: result.messageId, hasPdfAttachment: !!pdfBase64 };
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown email error';
-    // console.error('❌ Failed to send GRN email:', errorMessage);
+    console.error('❌ Failed to send GRN email:', errorMessage);
     resetTransporter();
     return { success: false, error: errorMessage };
   }

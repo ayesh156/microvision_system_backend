@@ -1118,7 +1118,7 @@ main()
     await prisma.$disconnect();
   })
   .catch(async (e) => {
-    // console.error('❌ Seeding failed:', e);
+    console.error('❌ Seeding failed:', e);
     await prisma.$disconnect();
     process.exit(1);
   });

@@ -648,7 +648,7 @@ function main() {
 }
 main()
     .catch(function (e) {
-    // console.error('❌ Seed failed:', e);
+    console.error('❌ Seed failed:', e);
     process.exit(1);
 })
     .finally(function () { return __awaiter(void 0, void 0, void 0, function () {

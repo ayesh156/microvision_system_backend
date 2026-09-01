@@ -204,7 +204,7 @@ async function reconnect(client: PrismaClient): Promise<void> {
       }
     } catch (err) {
       isConnected = false;
-      // console.error('❌ Database reconnection failed:', err instanceof Error ? err.message.substring(0, 200) : err);
+      console.error('❌ Database reconnection failed:', err instanceof Error ? err.message.substring(0, 200) : err);
       throw err;
     } finally {
       isReconnecting = false;
@@ -278,7 +278,7 @@ function createPrismaClient(): PrismaClient {
       } catch (retryError) {
         // Retry also failed — surface the error
         isConnected = false;
-        // console.error(`❌ Retry failed for ${model}.${action}: ${(retryError as Error).message?.substring(0, 120)}`);
+        console.error(`❌ Retry failed for ${model}.${action}: ${(retryError as Error).message?.substring(0, 120)}`);
         throw retryError;
       }
     }
@@ -446,7 +446,7 @@ export const connectWithRetry = async (retries = 5, delay = 2000): Promise<void>
       bypassMiddleware = false;
       isConnected = false;
       const msg = error instanceof Error ? error.message.substring(0, 150) : String(error);
-      // console.error(`❌ DB connect attempt ${attempt}/${retries}: ${msg}`);
+      console.error(`❌ DB connect attempt ${attempt}/${retries}: ${msg}`);
       if (attempt < retries) {
         const waitTime = delay * attempt; // Progressive backoff: 2s, 4s, 6s, 8s, 10s (total=30s max)
         // console.log(`⏳ Waiting ${waitTime / 1000}s before retry...`);
@@ -454,9 +454,9 @@ export const connectWithRetry = async (retries = 5, delay = 2000): Promise<void>
       }
     }
   }
-  // console.error('🚨 All startup connection attempts failed.');
-  // console.error('🚨 DATABASE_URL set:', !!process.env.DATABASE_URL);
-  // console.error('🚨 URL prefix:', process.env.DATABASE_URL ? process.env.DATABASE_URL.substring(0, 40) + '...' : 'NOT SET');
+  console.error('🚨 All startup connection attempts failed.');
+  console.error('🚨 DATABASE_URL set:', !!process.env.DATABASE_URL);
+  console.error('🚨 URL prefix:', process.env.DATABASE_URL ? process.env.DATABASE_URL.substring(0, 40) + '...' : 'NOT SET');
   
   // Resolve dbReady even on failure so requests don't hang forever
   // (they'll get a proper 503 from the error handler instead)

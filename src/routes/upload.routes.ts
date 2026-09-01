@@ -102,7 +102,7 @@ router.post('/product-image', protect, sensitiveRateLimiter, upload.single('imag
       }
     });
   } catch (error) {
-    // console.error('Upload error:', error);
+    console.error('Upload error:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to upload image'
@@ -134,7 +134,7 @@ router.post('/shop-logo', protect, sensitiveRateLimiter, uploadLogoMulter.single
       }
     });
   } catch (error) {
-    // console.error('Upload error:', error);
+    console.error('Upload error:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to upload logo'
@@ -164,7 +164,7 @@ router.delete('/product-image/:filename', protect, sensitiveRateLimiter, async (
       message: 'Image deleted successfully'
     });
   } catch (error) {
-    // console.error('Delete error:', error);
+    console.error('Delete error:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to delete image'

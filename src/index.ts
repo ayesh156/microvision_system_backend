@@ -55,9 +55,6 @@ const isProduction = process.env.NODE_ENV === "production";
 // TRUST PROXY - Required for Render.com & Contabo (behind reverse proxy)
 // ===================================
 app.set("trust proxy", 1);
-// console.log(
-  `🔒 Trust proxy set to 1 (${isProduction ? "production" : "development"})`,
-);
 
 // ===================================
 // SECURITY MIDDLEWARE - Order matters!
@@ -360,7 +357,7 @@ const startServer = async () => {
     await connectWithRetry(5, 2000);
     // console.log("📦 Database initialization complete");
   } catch (err) {
-    // console.error(
+    console.error(
       "⚠️ Database pre-connect failed, per-request retry is still active:",
       err instanceof Error ? err.message : err,
     );
@@ -373,9 +370,9 @@ export default app;
 
 
 process.on('uncaughtException', (err) => {
-  // console.error('🛡️ Process Safety: Uncaught Exception caught:', err.message);
+  console.error('🛡️ Process Safety: Uncaught Exception caught:', err.message);
 });
 
 process.on('unhandledRejection', (reason) => {
-  // console.error('🛡️ Process Safety: Unhandled Rejection caught:', reason);
+  console.error('🛡️ Process Safety: Unhandled Rejection caught:', reason);
 });

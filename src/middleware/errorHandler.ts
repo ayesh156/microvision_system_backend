@@ -49,7 +49,7 @@ export const errorHandler = (
     if (prismaError.code === 'P2024') {
       statusCode = 503;
       message = 'Database connection pool timeout. The service is temporarily busy. Please try again in a moment.';
-      // console.error('🚨 Connection Pool Timeout (P2024):', err.message?.substring(0, 200));
+      console.error('🚨 Connection Pool Timeout (P2024):', err.message?.substring(0, 200));
     } else if (prismaError.code === 'P2025') {
       statusCode = 404;
       message = 'Record not found. The requested resource does not exist.';
@@ -66,11 +66,11 @@ export const errorHandler = (
   } else if (err.name === 'PrismaClientInitializationError') {
     statusCode = 503;
     message = 'Database connection failed. The service is temporarily unavailable. Please try again in a moment.';
-    // console.error('🚨 Prisma Initialization Error:', err.message);
+    console.error('🚨 Prisma Initialization Error:', err.message);
   } else if (err.name === 'PrismaClientRustPanicError') {
     statusCode = 503;
     message = 'A critical database error occurred. Please try again.';
-    // console.error('🚨 Prisma Rust Panic:', err.message);
+    console.error('🚨 Prisma Rust Panic:', err.message);
   } else if (
     err.message?.includes('Can\'t reach database') ||
     err.message?.includes('Connection refused') ||
@@ -87,7 +87,7 @@ export const errorHandler = (
   ) {
     statusCode = 503;
     message = 'Database connection failed. Please try again in a moment.';
-    // console.error('🚨 DB Connection Error:', err.message?.substring(0, 300));
+    console.error('🚨 DB Connection Error:', err.message?.substring(0, 300));
   }
 
   const response: ErrorResponse = {
@@ -102,7 +102,7 @@ export const errorHandler = (
     response.stack = err.stack;
   }
 
-  // console.error(`❌ Error: ${message}`, err);
+  console.error(`❌ Error: ${message}`, err);
 
   res.status(statusCode).json(response);
 };
