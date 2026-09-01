@@ -1,7 +1,6 @@
 /**
  * Shop Routes - Simplified for Single-Shop mode
  * Shop profile settings and local user management only.
- * Multi-shop registration, listing, and super-admin endpoints are removed.
  */
 
 import { Router } from 'express';
@@ -59,6 +58,30 @@ router.get('/current/stats', protect, authorize('ADMIN', 'MANAGER'), async (req,
   }
 });
 
+// ✅ 404 Crash Fix: WhatsApp settings fallback route
+router.get('/current/whatsapp', protect, (req, res) => {
+  res.status(200).json({
+    success: true,
+    data: {
+      enabled: false,
+      apiKey: null,
+      phoneNumber: null,
+      templates: {}
+    }
+  });
+});
+
+// ✅ 404 Crash Fix: Tax settings fallback route
+router.get('/current/tax-settings', protect, (req, res) => {
+  res.status(200).json({
+    success: true,
+    data: {
+      taxRate: 0,
+      taxEnabled: false
+    }
+  });
+});
+
 // ==========================================
 // USER MANAGEMENT (admin only)
 // ==========================================
@@ -111,8 +134,8 @@ router.get('/current/sections', protect, async (req, res, next) => {
   }
 });
 
-// Update hidden sections (SuperAdmin manages hiddenSections, Admin manages adminHiddenSections)
-router.put('/current/sections', protect, authorize('ADMIN', 'SUPER_ADMIN'), sensitiveRateLimiter, async (req, res, next) => {
+// Update hidden sections (Simplified: ADMIN only)
+router.put('/current/sections', protect, authorize('ADMIN'), sensitiveRateLimiter, async (req, res, next) => {
   try {
     const shopId = getShopId();
     req.params.id = shopId;

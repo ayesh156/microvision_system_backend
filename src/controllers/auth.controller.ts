@@ -42,13 +42,21 @@ const storeRefreshToken = async (userId: string, token: string): Promise<void> =
   const decoded = jwt.decode(token) as { exp: number };
   const expiresAt = new Date(decoded.exp * 1000);
   
+  // Clean up old tokens silently first
+  await prisma.refreshToken.deleteMany({
+    where: { 
+      OR: [
+        { userId, expiresAt: { lt: new Date() } },
+        { token }
+      ]
+    },
+  }).catch(() => {});
+
   await prisma.refreshToken.create({
     data: { token, userId, expiresAt },
+  }).catch((err) => {
+    console.warn('Refresh token store collision caught:', err.message);
   });
-  
-  await prisma.refreshToken.deleteMany({
-    where: { userId, expiresAt: { lt: new Date() } },
-  }).catch(() => {});
 };
 
 const validateRefreshToken = async (token: string): Promise<string | null> => {
