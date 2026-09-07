@@ -69,8 +69,9 @@ export class ProductService {
       include: {
         category: true,
         brand: true,
-        stockMovements: { orderBy: { createdAt: 'desc' }, take: 10 },
-        priceHistory: { orderBy: { createdAt: 'desc' }, take: 10 },
+        // ✅ Audit update: Show more recent movements on detail view
+        stockMovements: { orderBy: { createdAt: 'desc' }, take: 50 },
+        priceHistory: { orderBy: { createdAt: 'desc' }, take: 20 },
       },
     });
 
@@ -181,6 +182,103 @@ export class ProductService {
     });
 
     return { previousStock, newStock };
+  }
+
+  // Return flat movements array directly without shopId mismatch
+  async getProductMovements(_shopId: string, productId: string) {
+    const product = await prisma.product.findUnique({
+      where: { id: productId },
+      select: { id: true },
+    });
+
+    if (!product) throw new AppError('Product not found', 404);
+
+    const movements = await prisma.stockMovement.findMany({
+      where: { productId }, // 🔒 Query by productId only
+      orderBy: { createdAt: 'desc' },
+      take: 100,
+    });
+
+    return movements; // 🔒 Return flat array directly
+  }
+
+  // Get product sales history (invoices containing this product)
+  async getSalesHistory(shopId: string, productId: string, page: number = 1, limit: number = 20) {
+    const skip = (page - 1) * limit;
+
+    const [items, total] = await Promise.all([
+      prisma.invoiceItem.findMany({
+        where: {
+          productId,
+          invoice: { shopId },
+        },
+        include: {
+          invoice: {
+            select: {
+              id: true,
+              invoiceNumber: true,
+              customerName: true,
+              date: true,
+              status: true,
+              total: true,
+              paidAmount: true,
+            },
+          },
+        },
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take: limit,
+      }),
+      prisma.invoiceItem.count({
+        where: {
+          productId,
+          invoice: { shopId },
+        },
+      }),
+    ]);
+
+    const allItems = await prisma.invoiceItem.findMany({
+      where: {
+        productId,
+        invoice: { shopId },
+      },
+      select: {
+        quantity: true,
+        total: true,
+        unitPrice: true,
+      },
+    });
+
+    const totalUnitsSold = allItems.reduce((acc, curr) => acc + curr.quantity, 0);
+    const totalRevenue = allItems.reduce((acc, curr) => acc + Number(curr.total), 0);
+    const averageSellingPrice = totalUnitsSold > 0 ? totalRevenue / totalUnitsSold : 0;
+
+    return {
+      items,
+      stats: {
+        totalUnitsSold,
+        totalRevenue,
+        averageSellingPrice,
+        totalTransactions: total,
+      },
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
+  }
+
+  // Get price change history for a product
+  async getPriceHistory(_shopId: string, productId: string) {
+    const history = await prisma.priceHistory.findMany({
+      where: { productId },
+      orderBy: { createdAt: 'desc' },
+      take: 50,
+    });
+
+    return history;
   }
 }
 

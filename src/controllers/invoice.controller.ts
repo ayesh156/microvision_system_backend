@@ -852,13 +852,32 @@ export const deleteInvoice = async (
 
     // Delete in transaction (restore stock)
     await prisma.$transaction(async (tx) => {
-      // Restore product stock (only for items with valid productId)
+      // Restore product stock and record return movement
       for (const item of invoice.items) {
         if (item.productId) {
-          await tx.product.update({
+          const updatedProduct = await tx.product.update({
             where: { id: item.productId },
             data: {
               stock: { increment: item.quantity },
+              totalSold: { decrement: item.quantity },
+            },
+          });
+
+          // ✅ AUDIT: Record return/cancellation stock movement
+          await tx.stockMovement.create({
+            data: {
+              productId: item.productId,
+              type: 'RETURN',
+              quantity: item.quantity,
+              previousStock: updatedProduct.stock - item.quantity,
+              newStock: updatedProduct.stock,
+              referenceId: invoice.id,
+              referenceNumber: invoice.invoiceNumber,
+              referenceType: 'invoice_deleted',
+              unitPrice: Number(item.unitPrice),
+              shopId: invoice.shopId,
+              notes: `Stock returned due to invoice #${invoice.invoiceNumber} deletion`,
+              createdBy: req.user?.id,
             },
           });
         }

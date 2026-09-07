@@ -13,6 +13,9 @@ import {
   updateProduct,
   deleteProduct,
   updateProductStock,
+  getProductMovements,
+  getProductSalesHistory,
+  getProductPriceHistory,
 } from '../controllers/product.controller';
 
 const router = Router();
@@ -25,6 +28,16 @@ router.get('/', getAllProducts);
 
 // GET /products/:id - Get single product
 router.get('/:id', getProductById);
+
+// ✅ AUDIT: Support both endpoint conventions for frontend compatibility
+router.get('/:id/movements', getProductMovements);
+router.get('/:id/stock-movements', getProductMovements);
+
+// ✅ NEW: GET /products/:id/price-history (Prevents 404 error in console)
+router.get('/:id/price-history', getProductPriceHistory);
+
+// ✅ SALES HISTORY: Invoices list for this product
+router.get('/:id/sales-history', getProductSalesHistory);
 
 // POST /products - Create new product
 router.post('/', sensitiveRateLimiter, createProduct);

@@ -80,3 +80,45 @@ export const updateProductStock = async (req: AuthRequest, res: Response, next: 
     next(error);
   }
 };
+
+export const getProductMovements = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const shopId = getShopId();
+    const result = await productService.getProductMovements(shopId, req.params.id);
+    res.json({ success: true, data: result });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Controller to return product sales history via ProductService
+export const getProductSalesHistory = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const shopId = getShopId();
+    const { id } = req.params;
+    const page = Math.max(1, parseInt(req.query.page as string) || 1);
+    const limit = Math.min(100, Math.max(1, parseInt(req.query.limit as string) || 20));
+
+    const result = await productService.getSalesHistory(shopId, id, page, limit);
+
+    res.json({
+      success: true,
+      data: result.items,
+      stats: result.stats,
+      pagination: result.pagination,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Return price history records
+export const getProductPriceHistory = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const shopId = getShopId();
+    const result = await productService.getPriceHistory(shopId, req.params.id);
+    res.json({ success: true, data: result });
+  } catch (error) {
+    next(error);
+  }
+};
