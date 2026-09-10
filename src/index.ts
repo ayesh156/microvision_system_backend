@@ -347,15 +347,11 @@ app.use(errorHandler);
 // ===================================
 const startServer = async () => {
   app.listen(PORT, () => {
-    // console.log(`🚀 Server running on http://localhost:${PORT}`);
-    // console.log(`📊 Environment: ${process.env.NODE_ENV || "development"}`);
-    // console.log(`📡 API available at http://localhost:${PORT}${API_PREFIX}`);
-    // console.log(`📡 API Test URL at http://localhost:${PORT}/api/test`);
+    // console.log(`🚀 Standalone server running on port ${PORT}`);
   });
 
   try {
     await connectWithRetry(5, 2000);
-    // console.log("📦 Database initialization complete");
   } catch (err) {
     console.error(
       "⚠️ Database pre-connect failed, per-request retry is still active:",
@@ -364,9 +360,18 @@ const startServer = async () => {
   }
 };
 
-startServer();
+// ✅ LSNODE COMPATIBILITY: Only bind standalone port if NOT running under LiteSpeed / Passenger
+if (!process.env.LSNODE && !process.env.PASSENGER_APP_ENV && require.main === module) {
+  startServer();
+} else {
+  // Under LiteSpeed lsnode, port binding is handled by web server socket; initialize DB retry
+  connectWithRetry(5, 2000).catch((err) => {
+    console.error("⚠️ lsnode DB pre-connect retry:", err instanceof Error ? err.message : err);
+  });
+}
 
 export default app;
+module.exports = app;
 
 
 process.on('uncaughtException', (err) => {
