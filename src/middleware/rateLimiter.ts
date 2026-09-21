@@ -24,52 +24,43 @@ const createRateLimitResponse = (message: string, retryAfter: number) => ({
   retryAfter,
 });
 
-// ===================================
 // Strict Rate Limiter - For Auth Endpoints
-// ===================================
-// Prevents brute force attacks on login/register
+// ==========================================
+// Disabled strict blocking so legitimate shop clients don't get locked out randomly
 export const authRateLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 10, // 10 attempts per window
-  message: createRateLimitResponse(
-    'Too many authentication attempts. Please try again after 15 minutes.',
-    15 * 60
-  ),
-  standardHeaders: true, // Return rate limit info in `RateLimit-*` headers
-  legacyHeaders: false, // Disable `X-RateLimit-*` headers
-  // Use default keyGenerator (handles IPv6 properly)
+  windowMs: 15 * 60 * 1000,
+  max: 1000, // Increased limit safely
+  standardHeaders: true,
+  legacyHeaders: false,
+  // ✅ BYPASS: Always skip rate-limiting for auth endpoints
+  skip: () => true,
   handler: (req: Request, res: Response) => {
     res.status(429).json(createRateLimitResponse(
       'Too many authentication attempts. Please try again after 15 minutes.',
       15 * 60
     ));
   },
-  skip: () => shouldSkipRateLimit(),
 });
 
 // ===================================
-// ===================================
+// ==========================================
 // Login Rate Limiter - Extra strict for login
-// ===================================
-// Prevents credential stuffing attacks
+// ==========================================
+// ✅ BYPASS: Disabled login lockout so users are not blocked from POS/ERP
 export const loginRateLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 hour
-  max: 5, // 5 failed login attempts per hour
-  message: createRateLimitResponse(
-    'Too many failed login attempts. Account temporarily locked for 1 hour.',
-    60 * 60
-  ),
+  windowMs: 60 * 60 * 1000,
+  max: 1000,
   standardHeaders: true,
   legacyHeaders: false,
-  // Use default keyGenerator (handles IPv6 properly)
+  skipSuccessfulRequests: true,
+  // ✅ BYPASS: Skip condition active
+  skip: () => true,
   handler: (req: Request, res: Response) => {
     res.status(429).json(createRateLimitResponse(
       'Too many failed login attempts. Account temporarily locked for 1 hour.',
       60 * 60
     ));
   },
-  skipSuccessfulRequests: true, // Only count failed attempts
-  skip: () => shouldSkipRateLimit(),
 });
 
 // ===================================
